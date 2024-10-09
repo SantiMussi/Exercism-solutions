@@ -1,51 +1,27 @@
 class SqueakyClean {
     static String clean(String identifier) {
-        if (identifier.isEmpty()) {
-            return "";
-        }
-        // Paso 1: Reemplazar cada espacio con un guion bajo
-        String cleaned = identifier.trim().replace(" ", "_");
+        //Replace spaces with underscores
+        identifier = identifier.replace(" ", "_");
 
-        // Paso 2: Eliminar caracteres especiales de los costados (excepto guiones bajos)
-        cleaned = removeSpecialCharacters(cleaned);
-
-        //Step 2: Convert kebab to camelCase
-        cleaned = convertKebabToCamelCase(cleaned);
-
-        // Step 3: Remove all non-alphanumeric characters
-        cleaned = convertLeetSpeak(cleaned);
-
-        return cleaned;
-    }
-
-    private static String removeSpecialCharacters(String input) {
-        return input.replaceAll("^[^a-zA-Z0-9]+|[^a-zA-Z0-9]+$", "");
-    }
-
-    private static String convertKebabToCamelCase(String input) {
-        StringBuilder result = new StringBuilder();
-        boolean capitalizeNext = false;
-
-        for (char c : input.toCharArray()) {
-            if (c == '-') {
-                capitalizeNext = true;
-            } else if (capitalizeNext) {
-                result.append(Character.toUpperCase(c));
-                capitalizeNext = false;
-            } else {
-                result.append(c);
+        //Convert kebab-case to camelCase
+        String[] parts = identifier.split("-");
+        StringBuilder camelCase = new StringBuilder(parts[0]); // Start with the first part
+        for (int i = 1; i < parts.length; i++) {
+            if (parts[i].length() > 0) {
+                camelCase.append(Character.toUpperCase(parts[i].charAt(0)));
+                camelCase.append(parts[i].substring(1).toLowerCase());
             }
         }
+        identifier = camelCase.toString();
 
-        return result.toString();
-    }
-
-    private static String convertLeetSpeak(String input) {
-        return input.replace('4', 'a')
+        //Convert leetspeak to normal text
+        identifier = identifier.replace('4', 'a')
                 .replace('3', 'e')
                 .replace('0', 'o')
                 .replace('1', 'l')
                 .replace('7', 't');
-    }
 
+        //Omit characters that are not letters or underscores
+        return identifier.replaceAll("[^a-zA-Z_]", "");
+    }
 }
